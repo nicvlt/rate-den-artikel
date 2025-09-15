@@ -1,0 +1,45 @@
+/* Buttons */
+button {
+    border-radius: 0.375em;
+    border: 2px solid transparent;
+    border-color: var(--color-accent);
+
+    background-color: var(--color-light);
+    color: var(--color-dark);
+
+    padding: 0.6em 1.2em;
+
+    font-size: 1em;
+    font-weight: 400;
+    font-family: var(--font-body);
+
+    cursor: pointer;
+    transition: background-color 0.1s, color 0.1s;
+}
+
+button:hover {
+    background-color: var(--color-accent);
+    color: var(--color-light);
+}
+
+button:active {
+    transform: scale(0.98);
+    transition: transform 0.1s;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.success {
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+    color: var(--color-light);
+}
+
+.fail {
+    background-color: var(--color-error);
+    border-color: var(--color-error);
+    color: var(--color-light);
+}

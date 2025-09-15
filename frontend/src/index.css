@@ -1,0 +1,68 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Italiana&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Colors */
+  --color-dark: #27292B;
+  --color-light: #fffef3;
+  --color-muted: #605e4f;
+  --color-accent: #4e705a;
+  --color-success: #0FD27A;
+  --color-error: #D20F12;
+
+  /* Fonts */
+  --font-title: 'Italiana', serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* Base typography */
+  font-family: var(--font-body);
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: var(--color-light);
+  background-color: var(--color-dark);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  background-color: var(--color-light);
+  color: var(--color-dark);
+}
+
+/* Links */
+a {
+  font-weight: 500;
+  color: var(--color-accent);
+  text-decoration: inherit;
+}
+a:hover {
+  color: var(--color-secondary);
+}
+
+
+
+/* Dark/light mode adjustments */
+@media (prefers-color-scheme: light) {
+  :root {
+    color: var(--color-dark);
+    background-color: var(--color-light);
+  }
+  a:hover {
+    color: var(--color-accent);
+  }
+  button {
+    background-color: var(--color-secondary);
+    color: var(--color-light);
+  }
+}

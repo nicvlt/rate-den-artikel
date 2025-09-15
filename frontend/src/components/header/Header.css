@@ -1,0 +1,22 @@
+.header {
+  justify-content: center;
+  justify-items: center;
+}
+
+/* Headings */
+.title {
+  font-family: var(--font-title);
+  color: var(--color-dark);
+  font-size: 4rem;
+  margin: 0;
+}
+
+/* Subheadings */
+.subtitle {
+  font-family: var(--font-body);
+  color: var(--color-muted);
+  font-weight: 300;
+  font-size: 1em;
+  width:75%;
+  margin: 0;
+}
