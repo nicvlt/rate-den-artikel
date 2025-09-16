@@ -1,80 +1,115 @@
-import React, { useEffect, useRef, useState } from 'react';
-import './Guessing.css';
-import Button from '../../ui/Button';
+import React, { useEffect, useRef, useState } from 'react'
+import './Guessing.css'
+import Button from '../../ui/Button/Button'
+import { ArrowRight } from 'lucide-react'
 
-const BACKEND_API_URL = import.meta.env.VITE_BACKEND_URL;
-const LEVEL = 'A1'; // Currently hardcoded, can be dynamic later
+const BACKEND_API_URL = import.meta.env.VITE_BACKEND_URL
+const LEVEL = 'A1' // Currently hardcoded, can be dynamic later
 
 function Guessing() {
-  const [word, setWord] = useState('ㅤ'); // Unicode whitespace character to avoid layout shift
-  const [url, setUrl] = useState(null);
-  const [id, setId] = useState(null);
-  const [level, setLevel] = useState(null);
+  const [word, setWord] = useState('ㅤ') // Unicode whitespace character to avoid layout shift
+  const [url, setUrl] = useState(null)
+  const [id, setId] = useState(null)
+  const [level, setLevel] = useState(null)
 
-  const [statusRes, setStatusRes] = useState(null); // null, 'success', 'fail'
-  const [disabled, setDisabled] = useState(false);
-  const [selected, setSelected] = useState(null); // which label was clicked
+  const [buttonStates, setButtonStates] = useState({
+    der: null,
+    die: null,
+    das: null,
+  })
+  const [isLoading, setIsLoading] = useState(false)
+
+  const fetchWord = async () => {
+    try {
+      const params = new URLSearchParams({ level: LEVEL })
+      const url = `${BACKEND_API_URL}/words/random?${params.toString()}`
+      const response = await fetch(url)
+      const data = await response.json()
+      setWord(data.word)
+      setUrl(data.url)
+      setId(data.id)
+      setLevel(data.level)
+
+      setButtonStates({
+        der: null,
+        die: null,
+        das: null,
+      })
+    } catch (error) {
+      console.error('Error fetching word:', error)
+    }
+  }
+
+  const checkAnswer = async (guess) => {
+    setIsLoading(true)
+
+    try {
+      const params = new URLSearchParams({
+        id: id,
+        guess: guess,
+      })
+      const url = `${BACKEND_API_URL}/words/check?${params.toString()}`
+      console.log(url)
+      const response = await fetch(url, { method: 'POST' })
+      const data = await response.json()
+
+      const { answer, expected } = data
+
+      const newStates = {}
+      ;['der', 'die', 'das'].forEach((article) => {
+        if (article === expected) {
+          newStates[article] = 'success'
+        } else if (article === guess && !answer) {
+          newStates[article] = 'fail'
+        } else {
+          newStates[article] = null
+        }
+      })
+
+      setButtonStates(newStates)
+
+      // TODO - Handle score update here
+    } catch (error) {
+      console.error('Error checking answer:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const openDefinition = () => {
+    if (url) {
+      window.open(url, '_blank')
+    }
+  }
 
   useEffect(() => {
-    setStatusRes(null);
-    setSelected(null);
-    setDisabled(false);
+    fetchWord()
+  }, [])
 
-    const fetchWord = async () => {
-      try {
-        const params = new URLSearchParams({ level: LEVEL });
-        const url = `${BACKEND_API_URL}/words/random?${params.toString()}`;
-        console.log(url);
-        const response = await fetch(url);
-        const data = await response.json();
-        setWord(data.word);
-        setUrl(data.url);
-        setId(data.id);
-        setLevel(data.level);
-      } catch (error) {
-        console.error('Error fetching word:', error);
-      }
-    };
-
-    fetchWord();
-  }, []);
-
+  const gameOver = Object.values(buttonStates).some((state) => state !== null)
   const handleWordClick = (value) => {
-    setSelected(value);
-    setDisabled(true);
+    if (isLoading || gameOver) {
+      return
+    }
 
-    const checkAnswer = async () => {
-      try {
-        const params = new URLSearchParams({
-          word_id: id,
-          word: word,
-          guessed_article: value,
-        });
-        const url = `${BACKEND_API_URL}/words/check?${params.toString()}`;
-        const response = await fetch(url, { method: 'POST' });
-        const data = await response.json();
-
-        setStatusRes(data.correct ? 'success' : 'fail');
-      } catch (error) {
-        console.error('Error checking answer:', error);
-      }
-    };
-
-    checkAnswer();
-  };
+    checkAnswer(value)
+  }
 
   return (
-    <div className="container">
+    <div className='container'>
       <div>
-        <div className="word">{word}</div>
+        <div className='word' onClick={openDefinition}>
+          {word}
+        </div>
       </div>
-      <div className="button-group">
-        <Button label="der" onClick={() => handleWordClick('der')} status={selected === 'der' ? statusRes : null} disabled={disabled} />
-        <Button label="die" onClick={() => handleWordClick('die')} status={selected === 'die' ? statusRes : null} disabled={disabled} />
-        <Button label="das" onClick={() => handleWordClick('das')} status={selected === 'das' ? statusRes : null} disabled={disabled} />
+      <div className='button-group'>
+        <Button label='DER' onClick={() => handleWordClick('der')} status={buttonStates.der} disabled={isLoading || gameOver} />
+        <Button label='DIE' onClick={() => handleWordClick('die')} status={buttonStates.die} disabled={isLoading || gameOver} />
+        <Button label='DAS' onClick={() => handleWordClick('das')} status={buttonStates.das} disabled={isLoading || gameOver} />
       </div>
+      <div className='next-button-container'>{gameOver && <ArrowRight size={16} onClick={fetchWord} disabled={!gameOver || isLoading} className='next-button' />}</div>
     </div>
-  );
+  )
 }
 
-export default Guessing;
+export default Guessing
