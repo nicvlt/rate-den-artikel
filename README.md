@@ -6,6 +6,8 @@ A fun and interactive German language learning game where you guess the correct 
 
 "Rate den Artikel" (Guess the Article) is a web-based language learning tool that helps you master one of the most challenging aspects of German grammar: noun articles. The app presents you with German words and challenges you to choose the correct definite article.
 
+![Demo GIF](assets/demo.gif)
+
 ## ✨ Features
 
 - 🎲 **Random Word Selection**: Get random German nouns from different difficulty levels
