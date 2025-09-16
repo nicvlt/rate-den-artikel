@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 function Button({ label, onClick, status = null, disabled = false }) {
   const baseClasses =
-    'rounded-md border-2 px-6 py-3 text-base font-(--color-light) font-sans cursor-pointer transition-all duration-100 active:scale-[0.98] disabled:cursor-not-allowed disabled:pointer-events-none'
+    'rounded-md border-2 px-5 py-2 text-base font-(--color-light) font-sans cursor-pointer transition-all duration-100 active:scale-[0.98] disabled:cursor-not-allowed disabled:pointer-events-none'
 
   const getStatusClasses = () => {
     switch (status) {

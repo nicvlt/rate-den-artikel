@@ -96,10 +96,10 @@ function Guessing() {
   }
 
   return (
-    <div className='w-3/4 my-4 flex flex-col items-center gap-4'>
+    <div className='w-3/4 my-4 flex flex-col items-center gap-5'>
       <div className='w-full text-center'>
         <div
-          className='font-serif text-5xl w-full underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-all duration-300 ease-in text-center'
+          className='font-serif text-5xl w-full my-3 underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-all duration-300 ease-in text-center'
           onClick={openDefinition}
         >
           {word}
