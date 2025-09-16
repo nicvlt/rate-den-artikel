@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './Guessing.css'
 import Button from '../../ui/Button/Button'
+import IconButton from '../../ui/IconButton/IconButton'
 import { ArrowRight } from 'lucide-react'
 
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_URL
@@ -107,7 +108,11 @@ function Guessing() {
         <Button label='DIE' onClick={() => handleWordClick('die')} status={buttonStates.die} disabled={isLoading || gameOver} />
         <Button label='DAS' onClick={() => handleWordClick('das')} status={buttonStates.das} disabled={isLoading || gameOver} />
       </div>
-      <div className='next-button-container'>{gameOver && <ArrowRight size={16} onClick={fetchWord} disabled={!gameOver || isLoading} className='next-button' />}</div>
+      <div className='next-button-container'>
+        <IconButton onClick={fetchWord} className={`${gameOver && !isLoading ? 'opacity-100' : 'opacity-0'}`}>
+          <ArrowRight size={16} disabled={!gameOver || isLoading} />
+        </IconButton>
+      </div>
     </div>
   )
 }
