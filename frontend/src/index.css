@@ -1,5 +1,5 @@
 /* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Italiana&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   /* Colors */
@@ -11,7 +11,7 @@
   --color-error: #D20F12;
 
   /* Fonts */
-  --font-title: 'Italiana', serif;
+  --font-title: 'Cormorant Garamond', serif;
   --font-body: 'Inter', sans-serif;
 
   /* Base typography */
