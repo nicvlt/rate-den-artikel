@@ -9,7 +9,7 @@
   --color-muted: #605e4f;
   --color-accent: #4e705a;
   --color-success: #0FD27A;
-  --color-error: #D20F12;
+  --color-fail: #D20F12;
 
   /* Fonts */
   --font-title: 'Cormorant Garamond', serif;
@@ -38,4 +38,12 @@ body {
   font-family: var(--font-body);
   background-color: var(--color-light);
   color: var(--color-dark);
+}
+
+#root {
+  max-width: 1280px;
+  margin: 3em auto;
+  padding: 2rem;
+  text-align: center;
+  background-color: var(--color-light);
 }
