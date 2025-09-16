@@ -15,29 +15,30 @@ def get_random_word(level: Literal["A1", "A2", "B1"]) -> Optional[WordResponse]:
     """
     Return a random word from WORDS with the specified level.
     """
-    filtered_words = [word for word in WORDS if word["niveau"] == level]
+    filtered_words = [word for word in WORDS if word["level"] == level]
     if not filtered_words:
         return None
 
     rand_choice = random.choice(filtered_words)
     to_return = {
         "id": rand_choice["id"],
-        "word": rand_choice["wort"],
-        "level": rand_choice["niveau"],
+        "word": rand_choice["word"],
+        "level": rand_choice["level"],
         "url": rand_choice["url"],
     }
 
     return to_return
 
 
-def check_article(word_id: str, word: str, guessed_article: str) -> Optional[bool]:
+def check_article(id: str, guess: str) -> Optional[bool]:
     """
     Check if the guessed article is correct.
     """
-    word_entry = next(
-        (w for w in WORDS if w["id"] == word_id and w["wort"] == word), None
-    )
+    word_entry = next((w for w in WORDS if w["id"] == id), None)
     if not word_entry:
         return None
 
-    return word_entry["artikel"].lower() == guessed_article.lower()
+    return (
+        word_entry["article"].lower() == guess.lower(),
+        word_entry["article"].lower(),
+    )

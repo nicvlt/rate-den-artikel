@@ -9,4 +9,5 @@ class WordResponse(BaseModel):
 
 
 class CheckArticleResponse(BaseModel):
-    correct: bool
+    answer: bool
+    expected: str
