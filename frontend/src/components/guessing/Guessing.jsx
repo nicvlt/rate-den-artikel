@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-import './Guessing.css'
 import Button from '../../ui/Button/Button'
 import IconButton from '../../ui/IconButton/IconButton'
 import { ArrowRight } from 'lucide-react'
@@ -97,20 +96,23 @@ function Guessing() {
   }
 
   return (
-    <div className='container'>
-      <div>
-        <div className='word' onClick={openDefinition}>
+    <div className='w-3/4 my-4 flex flex-col items-center gap-4'>
+      <div className='w-full text-center'>
+        <div
+          className='font-serif text-5xl w-full underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-all duration-300 ease-in text-center'
+          onClick={openDefinition}
+        >
           {word}
         </div>
       </div>
-      <div className='button-group'>
+      <div className='flex justify-evenly w-full'>
         <Button label='DER' onClick={() => handleWordClick('der')} status={buttonStates.der} disabled={isLoading || gameOver} />
         <Button label='DIE' onClick={() => handleWordClick('die')} status={buttonStates.die} disabled={isLoading || gameOver} />
         <Button label='DAS' onClick={() => handleWordClick('das')} status={buttonStates.das} disabled={isLoading || gameOver} />
       </div>
-      <div className='next-button-container'>
-        <IconButton onClick={fetchWord} className={`${gameOver && !isLoading ? 'opacity-100' : 'opacity-0'}`}>
-          <ArrowRight size={16} disabled={!gameOver || isLoading} />
+      <div className='flex justify-center w-full'>
+        <IconButton onClick={fetchWord} disabled={!gameOver || isLoading} className={`${gameOver && !isLoading ? 'opacity-100 cursor-pointer' : 'opacity-0 cursor-default'}`}>
+          <ArrowRight size={16} />
         </IconButton>
       </div>
     </div>
