@@ -7,10 +7,10 @@ button {
     background-color: var(--color-light);
     color: var(--color-dark);
 
-    padding: 0.6em 1.2em;
+    padding: 0.8em 1.6em;
 
     font-size: 1em;
-    font-weight: 400;
+    font-weight: 300;
     font-family: var(--font-body);
 
     cursor: pointer;
