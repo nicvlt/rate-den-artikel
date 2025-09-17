@@ -8,6 +8,7 @@ class WordResponse(BaseModel):
     url: str
 
 
-class CheckArticleResponse(BaseModel):
+class AnswerArticleResponse(BaseModel):
     answer: bool
     expected: str
+    xp_awarded: int

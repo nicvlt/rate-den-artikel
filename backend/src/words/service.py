@@ -42,3 +42,16 @@ def check_article(id: str, guess: str) -> Optional[bool]:
         word_entry["article"].lower() == guess.lower(),
         word_entry["article"].lower(),
     )
+
+
+def calculate_xp_awarded(id: str, is_correct: bool) -> int:
+    """
+    Calculate the XP awarded based on whether the answer is correct.
+    """
+    word_entry = next((w for w in WORDS if w["id"] == id), None)
+    if not word_entry:
+        return None
+    frequency = word_entry["frequency"]
+
+    scalar = 1 if is_correct else -1
+    return 100 * frequency * scalar
