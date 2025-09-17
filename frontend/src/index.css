@@ -28,22 +28,22 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Layout */
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  max-width: 100vw;
+  max-height: 100vh;
 }
 
 body {
-  margin: 0;
+  margin: auto auto;
   place-items: center;
   min-width: 320px;
-  max-height: 100vh;
+  max-width: 67%;
+  max-height: 67%;
   font-family: var(--font-body);
   background-color: var(--color-light);
   color: var(--color-dark);
-}
-
-#root {
-  max-width: 1280px;
-  margin: 3em auto;
-  padding: 2rem;
-  text-align: center;
-  background-color: var(--color-light);
 }

@@ -2,11 +2,12 @@ import React, { useEffect, useRef, useState } from 'react'
 import Button from '../../ui/Button/Button'
 import IconButton from '../../ui/IconButton/IconButton'
 import { ArrowRight } from 'lucide-react'
+import { useExperience } from '../../contexts/ExperienceContext'
 
 const BACKEND_API_URL = import.meta.env.VITE_BACKEND_URL
-const LEVEL = 'A1' // Currently hardcoded, can be dynamic later
 
 function Guessing() {
+  const { addXp, currentLevel } = useExperience()
   const [word, setWord] = useState('ㅤ') // Unicode whitespace character to avoid layout shift
   const [url, setUrl] = useState(null)
   const [id, setId] = useState(null)
@@ -21,7 +22,7 @@ function Guessing() {
 
   const fetchWord = async () => {
     try {
-      const params = new URLSearchParams({ level: LEVEL })
+      const params = new URLSearchParams({ level: currentLevel })
       const url = `${BACKEND_API_URL}/words/random?${params.toString()}`
       const response = await fetch(url)
       const data = await response.json()
@@ -48,12 +49,12 @@ function Guessing() {
         id: id,
         guess: guess,
       })
-      const url = `${BACKEND_API_URL}/words/check?${params.toString()}`
+      const url = `${BACKEND_API_URL}/words/answer?${params.toString()}`
       console.log(url)
       const response = await fetch(url, { method: 'POST' })
       const data = await response.json()
 
-      const { answer, expected } = data
+      const { answer, expected, xp_awarded } = data
 
       const newStates = {}
       ;['der', 'die', 'das'].forEach((article) => {
@@ -68,7 +69,7 @@ function Guessing() {
 
       setButtonStates(newStates)
 
-      // TODO - Handle score update here
+      addXp(xp_awarded)
     } catch (error) {
       console.error('Error checking answer:', error)
     } finally {
