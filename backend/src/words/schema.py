@@ -10,5 +10,5 @@ class WordResponse(BaseModel):
 
 class AnswerArticleResponse(BaseModel):
     answer: bool
-    expected: str
+    expected: list[str]
     xp_awarded: int

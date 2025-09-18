@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 import random
-from typing import Literal, Optional
+from typing import Literal, Optional, Tuple
 
 from src.words.schema import WordResponse
 
@@ -30,18 +30,21 @@ def get_random_word(level: Literal["A1", "A2", "B1"]) -> Optional[WordResponse]:
     return to_return
 
 
-def check_article(id: str, guess: str) -> Optional[bool]:
+def get_articles(word_id: str) -> Optional[list[str]]:
+    """
+    Get the articles for a given word ID.
+    """
+    word_entry = next((w for w in WORDS if w["id"] == word_id), None)
+    if not word_entry:
+        return None
+    return word_entry["articles"]
+
+
+def check_article(articles: list, guess: str) -> bool:
     """
     Check if the guessed article is correct.
     """
-    word_entry = next((w for w in WORDS if w["id"] == id), None)
-    if not word_entry:
-        return None
-
-    return (
-        word_entry["article"].lower() == guess.lower(),
-        word_entry["article"].lower(),
-    )
+    return guess.lower() in [a.lower() for a in articles]
 
 
 def calculate_xp_awarded(id: str, is_correct: bool) -> int:
