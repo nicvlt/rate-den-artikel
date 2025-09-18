@@ -50,7 +50,6 @@ function Guessing() {
         guess: guess,
       })
       const url = `${BACKEND_API_URL}/words/answer?${params.toString()}`
-      console.log(url)
       const response = await fetch(url, { method: 'POST' })
       const data = await response.json()
 
@@ -58,7 +57,7 @@ function Guessing() {
 
       const newStates = {}
       ;['der', 'die', 'das'].forEach((article) => {
-        if (article === expected) {
+        if (expected.includes(article)) {
           newStates[article] = 'success'
         } else if (article === guess && !answer) {
           newStates[article] = 'fail'
