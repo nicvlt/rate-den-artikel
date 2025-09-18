@@ -15,12 +15,6 @@ router = APIRouter(prefix="/words", tags=["words"])
 
 @router.get("/random", response_model=WordResponse)
 async def random_word(level: Literal["A1", "A2", "B1"]):
-    return {
-        "id": "2f2a4428-ae69-49a1-a446-c0b9b1ff7b02",
-        "word": "Erwachsene",
-        "level": level,
-        "url": "https://example.com",
-    }
     word_object = get_random_word(level)
     if not word_object:
         raise HTTPException(status_code=404, detail="No words found for this level")
