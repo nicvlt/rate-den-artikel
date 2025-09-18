@@ -4,13 +4,12 @@ from src.main import app  # import your FastAPI app
 
 client = TestClient(app)
 
-# Sample valid UUIDs from your dataset
 SAMPLE_WORDS = [
     {
         "id": "a00debc6-bf2a-400f-aeff-db358c3804d7",
-        "wort": "Butter",
-        "artikel": "die",
-        "niveau": "A1",
+        "word": "Butter",
+        "articles": ["die"],
+        "level": "A1",
         "url": "https://www.dwds.de/wb/Butter",
     }
 ]
@@ -31,31 +30,39 @@ def test_random_word(level):
 
 
 @pytest.mark.parametrize(
-    "guessed_article,expected", [("das", False), ("der", False), ("die", True)]
+    "guess,answer,expected",
+    [("das", False, ["die"]), ("der", False, ["die"]), ("die", True, ["die"])],
 )
-def test_check_article(guessed_article, expected):
+def test_check_article(guess, answer, expected):
     word_id = SAMPLE_WORDS[0]["id"]
     response = client.post(
-        "/words/check",
+        "/words/answer",
         params={
-            "word_id": word_id,
-            "word": SAMPLE_WORDS[0]["wort"],
-            "guessed_article": guessed_article,
+            "id": word_id,
+            "guess": guess,
         },
     )
     assert response.status_code == 200
     data = response.json()
-    assert "correct" in data
-    assert data["correct"] is expected
+    # Check keys
+    assert "answer" in data
+    assert "expected" in data
+    assert "xp_awarded" in data
+    # Check values
+    assert answer == data["answer"]
+    assert expected == data["expected"]
+    if answer:
+        assert data["xp_awarded"] > 0
+    else:
+        assert data["xp_awarded"] < 0
 
 
 def test_check_nonexistent_word():
     response = client.post(
-        "/words/check",
+        "/words/answer",
         params={
-            "word_id": "nonexistent-uuid",
-            "word": "FakeWord",
-            "guessed_article": "der",
+            "id": "nonexistent-uuid",
+            "guess": "der",
         },
     )
     # Should return 404 since word does not exist
