@@ -22,7 +22,8 @@ function ProgressBar() {
 
   return (
     <div id='progress-bar' className='w-full flex flex-col gap-1 items-center'>
-      <div id='progress-bar.text' className='w-full flex justify-between text-(--color-dark) font-serif text-sm relative px-3 sm:px-0'>
+      {/* Desktop: Text above progress bar */}
+      <div id='progress-bar.text' className='w-full hidden sm:flex justify-between text-(--color-dark) font-serif text-sm relative px-3 sm:px-0'>
         <div>{currentLevel}</div>
         <div className='relative'>
           <div
@@ -37,8 +38,26 @@ function ProgressBar() {
         </div>
         <div>{nextLevel}</div>
       </div>
-      <div id='progress-bar.container' className='w-full h-[8px] relative bg-(--color-muted-light) sm:rounded-xs'>
+
+      <div id='progress-bar.container' className='w-full h-[12px] sm:h-[8px] relative bg-(--color-muted-light) sm:rounded-xs'>
         <div id='progress-bar.fill' className='h-full bg-(--color-accent) absolute top-0 left-0 sm:rounded-xs transition-all duration-500' style={{ width: `${(xp / 1000) * 100}%` }}></div>
+      </div>
+
+      {/* Mobile: Text below progress bar */}
+      <div id='progress-bar.text-mobile' className='w-full flex sm:hidden justify-between text-(--color-dark) font-serif text-sm relative px-3 mt-1'>
+        <div>{currentLevel}</div>
+        <div className='relative'>
+          <div
+            className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 bg-(--color-accent) text-white text-xs rounded shadow-lg transition-all duration-300 whitespace-nowrap ${
+              showNotification ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+            }`}
+          >
+            {notificationText}
+            <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-(--color-accent)'></div>
+          </div>
+          {xp}/1000 xp
+        </div>
+        <div>{nextLevel}</div>
       </div>
     </div>
   )
