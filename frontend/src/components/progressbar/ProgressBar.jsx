@@ -37,7 +37,7 @@ function ProgressBar() {
         </div>
         <div>{nextLevel}</div>
       </div>
-      <div id='progress-bar.container' className='w-full h-[8px] relative outline outline-1 outline-transparent sm:outline-(--color-dark) outline-offset-[-1px] rounded-xs'>
+      <div id='progress-bar.container' className='w-full h-[8px] relative bg-(--color-muted-light) sm:rounded-xs'>
         <div id='progress-bar.fill' className='h-full bg-(--color-accent) absolute top-0 left-0 sm:rounded-xs transition-all duration-500' style={{ width: `${(xp / 1000) * 100}%` }}></div>
       </div>
     </div>
