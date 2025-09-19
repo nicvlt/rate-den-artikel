@@ -30,7 +30,7 @@ frontend/
 │       └── IconButton/
 │           └── IconButton.jsx     # Next word button
 ├── public/
-│   └── vite.svg                   # Vite logo
+│   └── logo.svg                   # App logo
 ├── index.html                     # HTML entry point
 ├── package.json                   # Dependencies and scripts
 ├── tailwind.config.js             # Tailwind configuration
@@ -140,9 +140,6 @@ colors: {
 ```env
 # Backend API URL
 VITE_BACKEND_URL=http://localhost:8000
-
-# Add other config as needed
-VITE_APP_TITLE="Rate den Artikel"
 ```
 
 ### Tailwind Configuration
@@ -170,6 +167,7 @@ Custom design system with:
 - **Loading States**: Disabled buttons during API calls
 - **Visual Feedback**: Color-coded button states
 - **Smooth Animations**: Transitions and hover effects
+- **Responsive Design**: Works on various screen sizes
 
 ### Technical Features
 - **State Management**: React hooks (useState, useEffect)
@@ -256,9 +254,7 @@ This creates an optimized production build in the `dist/` directory:
 
 ## 🔮 Future Enhancements
 
-- **Level Selection**: Beginner, Intermediate, Advanced (A1-C2)
 - **Learning Algorithms**: Adaptive difficulty based on performance
-- **Responsive Design**: Mobile optimization
 - **Authentication**: User accounts and progress saving
 - **Score Tracking**: User progress and statistics
 
