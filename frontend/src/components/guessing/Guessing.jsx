@@ -22,8 +22,17 @@ function Guessing() {
   const [isLoading, setIsLoading] = useState(false)
 
   const adjustFontSize = () => {
-    const baseSize = Math.max(2, 8 - word.length * 0.2)
-    setTextSize(`${baseSize}rem`)
+    const isSmallScreen = window.innerWidth < 640
+
+    if (isSmallScreen) {
+      // Mobile: use vw-based sizing that scales with word length
+      const baseSize = Math.max(8, 20 - word.length * 1.5) // More aggressive scaling for mobile
+      setTextSize(`${baseSize}vw`)
+    } else {
+      // Desktop: use rem-based sizing
+      const baseSize = Math.max(2.5, 6 - word.length * 0.3) // Less aggressive scaling for desktop
+      setTextSize(`${baseSize}rem`)
+    }
   }
 
   const fetchWord = async () => {
@@ -98,6 +107,17 @@ function Guessing() {
     }
   }, [word])
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (word !== 'ㅤ') {
+        adjustFontSize()
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [word])
+
   const gameOver = Object.values(buttonStates).some((state) => state !== null)
   const handleWordClick = (value) => {
     if (isLoading || gameOver) {
@@ -111,7 +131,8 @@ function Guessing() {
     <div className='w-3/4 my-4 flex flex-col items-center gap-[10vh] sm:gap-5'>
       <div className='w-full text-center'>
         <div
-          className={`font-serif text-[${textSize}] sm:text-5xl my-3 underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-all duration-300 ease-in text-center whitespace-nowrap`}
+          className='font-serif my-3 underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-all duration-300 ease-in text-center whitespace-nowrap'
+          style={{ fontSize: textSize }}
           onClick={openDefinition}
         >
           {word}
