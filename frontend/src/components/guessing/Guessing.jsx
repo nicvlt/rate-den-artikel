@@ -12,7 +12,9 @@ function Guessing() {
   const [url, setUrl] = useState(null)
   const [id, setId] = useState(null)
   const [level, setLevel] = useState(null)
-  const [textSize, setTextSize] = useState('15vw')
+  const [textSize, setTextSize] = useState('12vw')
+  const wordRef = useRef(null)
+  const containerRef = useRef(null)
 
   const [buttonStates, setButtonStates] = useState({
     der: null,
@@ -21,18 +23,46 @@ function Guessing() {
   })
   const [isLoading, setIsLoading] = useState(false)
 
-  const adjustFontSize = () => {
-    const isSmallScreen = window.innerWidth < 640
+  const checkTextOverflow = () => {
+    if (!wordRef.current || !containerRef.current) return false
 
-    if (isSmallScreen) {
-      // Mobile: use vw-based sizing that scales with word length
-      const baseSize = Math.max(8, 20 - word.length * 1.5) // More aggressive scaling for mobile
-      setTextSize(`${baseSize}vw`)
-    } else {
-      // Desktop: use rem-based sizing
-      const baseSize = Math.max(2.5, 6 - word.length * 0.3) // Less aggressive scaling for desktop
-      setTextSize(`${baseSize}rem`)
-    }
+    const textElement = wordRef.current
+    const container = containerRef.current
+
+    // Get computed styles to account for padding
+    const containerStyle = window.getComputedStyle(container)
+    const containerWidth = container.clientWidth - parseFloat(containerStyle.paddingLeft) - parseFloat(containerStyle.paddingRight)
+    const containerHeight = container.clientHeight - parseFloat(containerStyle.paddingTop) - parseFloat(containerStyle.paddingBottom)
+
+    return textElement.scrollWidth > containerWidth || textElement.scrollHeight > containerHeight
+  }
+
+  const adjustFontSizeIfNeeded = () => {
+    if (!wordRef.current || !containerRef.current) return
+
+    const isSmallScreen = window.innerWidth < 640
+    let currentSize = isSmallScreen ? 12 : 4 // More conservative starting size
+    const sizeUnit = isSmallScreen ? 'vw' : 'rem'
+    const minSize = isSmallScreen ? 4 : 1.2
+    const decrementSize = isSmallScreen ? 0.3 : 0.1
+
+    // Set initial optimistic size
+    wordRef.current.style.fontSize = `${currentSize}${sizeUnit}`
+
+    // Use requestAnimationFrame to ensure layout is complete before checking overflow
+    requestAnimationFrame(() => {
+      let iterations = 0
+      const maxIterations = 30 // Prevent infinite loops
+
+      while (checkTextOverflow() && currentSize > minSize && iterations < maxIterations) {
+        currentSize = Math.max(minSize, currentSize - decrementSize)
+        wordRef.current.style.fontSize = `${currentSize}${sizeUnit}`
+        iterations++
+      }
+
+      // Update state to match final computed size
+      setTextSize(`${currentSize}${sizeUnit}`)
+    })
   }
 
   const fetchWord = async () => {
@@ -103,14 +133,14 @@ function Guessing() {
 
   useEffect(() => {
     if (word !== 'ㅤ') {
-      adjustFontSize()
+      adjustFontSizeIfNeeded()
     }
   }, [word])
 
   useEffect(() => {
     const handleResize = () => {
       if (word !== 'ㅤ') {
-        adjustFontSize()
+        adjustFontSizeIfNeeded()
       }
     }
 
@@ -131,11 +161,25 @@ function Guessing() {
     <div className='w-3/4 my-4 flex flex-col items-center gap-[10vh] sm:gap-5'>
       <div className='w-full text-center'>
         <div
-          className='font-serif my-3 underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-[text-decoration-color] duration-300 ease-in text-center whitespace-nowrap'
-          style={{ fontSize: textSize }}
-          onClick={openDefinition}
+          ref={containerRef}
+          className='mx-auto my-3 flex items-center justify-center relative'
+          style={{
+            height: 'clamp(120px, 18vh, 180px)',
+            width: '100%',
+          }}
         >
-          {word}
+          <div
+            ref={wordRef}
+            className='font-serif underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-[text-decoration-color] duration-300 ease-in text-center max-w-full px-4'
+            style={{
+              fontSize: textSize,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+            }}
+            onClick={openDefinition}
+          >
+            {word}
+          </div>
         </div>
       </div>
       <div className='flex justify-evenly w-full'>
