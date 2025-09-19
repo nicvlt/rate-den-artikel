@@ -131,7 +131,7 @@ function Guessing() {
     <div className='w-3/4 my-4 flex flex-col items-center gap-[10vh] sm:gap-5'>
       <div className='w-full text-center'>
         <div
-          className='font-serif my-3 underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-all duration-300 ease-in text-center whitespace-nowrap'
+          className='font-serif my-3 underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-[text-decoration-color] duration-300 ease-in text-center whitespace-nowrap'
           style={{ fontSize: textSize }}
           onClick={openDefinition}
         >

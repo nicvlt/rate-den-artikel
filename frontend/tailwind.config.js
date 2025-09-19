@@ -17,6 +17,16 @@ export default {
         serif: ['Cormorant Garamond', 'serif'],
         sans: ['Inter', 'sans-serif'],
       },
+      height: {
+        'screen-mobile': ['100vh', '100dvh'],
+        'screen-small': ['100vh', '100svh'],
+        'screen-large': ['100vh', '100lvh'],
+      },
+      minHeight: {
+        'screen-mobile': ['100vh', '100dvh'],
+        'screen-small': ['100vh', '100svh'],
+        'screen-large': ['100vh', '100lvh'],
+      },
     },
   },
   plugins: [],
