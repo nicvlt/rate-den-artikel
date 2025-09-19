@@ -2,6 +2,10 @@
 
 A fun and interactive German language learning game where you guess the correct article (der, die, das) for German nouns. Perfect for German language learners at A1, A2, and B1 levels.
 
+## 🎉 Try it out!
+
+https://rate-den-artikel.vercel.app/
+
 ## 🎯 What is this?
 
 "Rate den Artikel" (Guess the Article) is a web-based language learning tool that helps you master one of the most challenging aspects of German grammar: noun articles. The app presents you with German words and challenges you to choose the correct definite article.
@@ -14,6 +18,7 @@ A fun and interactive German language learning game where you guess the correct 
 - 🎯 **Instant Feedback**: Immediate visual feedback on correct/incorrect answers
 - 🔗 **Dictionary Integration**: Click on words to view definitions on DWDS
 - 🚀 **Fast API Backend**: High-performance FastAPI backend with comprehensive word database
+- 🎨 **Responsive Design**: Mobile-friendly layout for learning on the go
 
 ## 🏗️ Architecture
 

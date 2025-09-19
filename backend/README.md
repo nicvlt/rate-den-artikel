@@ -92,9 +92,9 @@ GET /words/random?level={level}
 }
 ```
 
-### Check Article
+### Answer Article
 ```http
-POST /words/check?id={id}&guess={guess}
+POST /words/answer?id={id}&guess={guess}
 ```
 
 **Parameters:**
@@ -105,7 +105,8 @@ POST /words/check?id={id}&guess={guess}
 ```json
 {
   "answer": true,
-  "expected": "der"
+  "expected": "der",
+  "xp_awarded": 10
 }
 ```
 
@@ -140,11 +141,12 @@ class WordResponse(BaseModel):
     url: str          # Dictionary URL
 ```
 
-**CheckArticleResponse**
+**AnswerArticleResponse**
 ```python
-class CheckArticleResponse(BaseModel):
+class AnswerArticleResponse(BaseModel):
     answer: bool      # Whether guess was correct
     expected: str     # Correct article
+    xp_awarded: int   # Experience points awarded
 ```
 
 ## 🧪 Testing
