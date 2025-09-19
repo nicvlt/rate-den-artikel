@@ -7,6 +7,7 @@
   --color-dark: #27292B;
   --color-light: #fffef3;
   --color-muted: #605e4f;
+  --color-muted-light: #b8b6a8;
   --color-accent: #4e705a;
   --color-success: #0FD27A;
   --color-fail: #D20F12;
@@ -31,10 +32,10 @@
 
   /* Layout */
   display: flex;
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   max-width: 100vw;
-  max-height: 100vh;
+  max-height: 100dvh;
 }
 
 body {
