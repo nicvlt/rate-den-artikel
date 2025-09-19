@@ -12,6 +12,7 @@ function Guessing() {
   const [url, setUrl] = useState(null)
   const [id, setId] = useState(null)
   const [level, setLevel] = useState(null)
+  const [textSize, setTextSize] = useState('15vw')
 
   const [buttonStates, setButtonStates] = useState({
     der: null,
@@ -19,6 +20,11 @@ function Guessing() {
     das: null,
   })
   const [isLoading, setIsLoading] = useState(false)
+
+  const adjustFontSize = () => {
+    const baseSize = Math.max(2, 8 - word.length * 0.2)
+    setTextSize(`${baseSize}rem`)
+  }
 
   const fetchWord = async () => {
     try {
@@ -86,6 +92,12 @@ function Guessing() {
     fetchWord()
   }, [])
 
+  useEffect(() => {
+    if (word !== 'ㅤ') {
+      adjustFontSize()
+    }
+  }, [word])
+
   const gameOver = Object.values(buttonStates).some((state) => state !== null)
   const handleWordClick = (value) => {
     if (isLoading || gameOver) {
@@ -99,7 +111,7 @@ function Guessing() {
     <div className='w-3/4 my-4 flex flex-col items-center gap-[10vh] sm:gap-5'>
       <div className='w-full text-center'>
         <div
-          className='font-serif text-[15vw] sm:text-5xl w-full my-3 underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-all duration-300 ease-in text-center'
+          className={`font-serif text-[${textSize}] sm:text-5xl my-3 underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-all duration-300 ease-in text-center whitespace-nowrap`}
           onClick={openDefinition}
         >
           {word}
