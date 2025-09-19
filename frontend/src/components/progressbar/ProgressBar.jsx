@@ -22,7 +22,7 @@ function ProgressBar() {
 
   return (
     <div id='progress-bar' className='w-full flex flex-col gap-1 items-center'>
-      <div id='progress-bar.text' className='w-full flex justify-between text-(--color-dark) font-serif text-sm relative'>
+      <div id='progress-bar.text' className='w-full flex justify-between text-(--color-dark) font-serif text-sm relative px-3 sm:px-0'>
         <div>{currentLevel}</div>
         <div className='relative'>
           <div
@@ -37,8 +37,8 @@ function ProgressBar() {
         </div>
         <div>{nextLevel}</div>
       </div>
-      <div id='progress-bar.container' className='w-full h-[8px] relative outline outline-1 outline-(--color-dark) outline-offset-[-1px] rounded-xs'>
-        <div id='progress-bar.fill' className='h-full bg-(--color-accent) absolute top-0 left-0 rounded-xs transition-all duration-500' style={{ width: `${(xp / 1000) * 100}%` }}></div>
+      <div id='progress-bar.container' className='w-full h-[8px] relative outline outline-1 outline-transparent sm:outline-(--color-dark) outline-offset-[-1px] rounded-xs'>
+        <div id='progress-bar.fill' className='h-full bg-(--color-accent) absolute top-0 left-0 sm:rounded-xs transition-all duration-500' style={{ width: `${(xp / 1000) * 100}%` }}></div>
       </div>
     </div>
   )

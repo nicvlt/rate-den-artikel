@@ -38,12 +38,15 @@
 }
 
 body {
-  margin: auto auto;
+  height: 100%;
+  width: 100%;
   place-items: center;
-  min-width: 320px;
-  max-width: 67%;
-  max-height: 67%;
   font-family: var(--font-body);
   background-color: var(--color-light);
   color: var(--color-dark);
+}
+
+#root {
+  height: 100%;
+  width: 100%;
 }
