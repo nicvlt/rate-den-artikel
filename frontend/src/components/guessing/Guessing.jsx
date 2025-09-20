@@ -29,7 +29,6 @@ function Guessing() {
     const textElement = wordRef.current
     const container = containerRef.current
 
-    // Get computed styles to account for padding
     const containerStyle = window.getComputedStyle(container)
     const containerWidth = container.clientWidth - parseFloat(containerStyle.paddingLeft) - parseFloat(containerStyle.paddingRight)
     const containerHeight = container.clientHeight - parseFloat(containerStyle.paddingTop) - parseFloat(containerStyle.paddingBottom)
@@ -49,7 +48,6 @@ function Guessing() {
     // Set initial optimistic size
     wordRef.current.style.fontSize = `${currentSize}${sizeUnit}`
 
-    // Use requestAnimationFrame to ensure layout is complete before checking overflow
     requestAnimationFrame(() => {
       let iterations = 0
       const maxIterations = 30 // Prevent infinite loops
@@ -60,7 +58,6 @@ function Guessing() {
         iterations++
       }
 
-      // Update state to match final computed size
       setTextSize(`${currentSize}${sizeUnit}`)
     })
   }
@@ -82,6 +79,7 @@ function Guessing() {
         das: null,
       })
     } catch (error) {
+      setWord(`__error__Couldn't reach the server. It was inactive for too long and is turning on right now. This might take up to a few minutes. Please refresh the page.`)
       console.error('Error fetching word:', error)
     }
   }
@@ -168,18 +166,21 @@ function Guessing() {
             width: '100%',
           }}
         >
-          <div
-            ref={wordRef}
-            className='font-serif underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-[text-decoration-color] duration-300 ease-in text-center max-w-full px-4'
-            style={{
-              fontSize: textSize,
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-            }}
-            onClick={openDefinition}
-          >
-            {word}
-          </div>
+          {!word.startsWith('__error__') && (
+            <div
+              ref={wordRef}
+              className='font-serif underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-[text-decoration-color] duration-300 ease-in text-center max-w-full px-4'
+              style={{
+                fontSize: textSize,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+              }}
+              onClick={openDefinition}
+            >
+              {word}
+            </div>
+          )}
+          {word.startsWith('__error__') && <div className='font-sans text-red-600 text-center px-4'>{word.replace('__error__', '')}</div>}
         </div>
       </div>
       <div className='flex justify-evenly w-full'>
