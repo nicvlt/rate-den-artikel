@@ -22,6 +22,9 @@ function Guessing() {
     das: null,
   })
   const [isLoading, setIsLoading] = useState(false)
+  const [isFetchingWord, setIsFetchingWord] = useState(false)
+  const [isSlowFetch, setIsSlowFetch] = useState(false)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const checkTextOverflow = () => {
     if (!wordRef.current || !containerRef.current) return false
@@ -63,10 +66,27 @@ function Guessing() {
   }
 
   const fetchWord = async () => {
+    setIsFetchingWord(true)
+    setIsSlowFetch(false)
+    setErrorMessage(null)
+
+    const controller = new AbortController()
+    const slowTimer = setTimeout(() => setIsSlowFetch(true), 1500) // show "waking up" hint
+    const hardTimeoutMs = 12000
+    const hardTimer = setTimeout(() => controller.abort(), hardTimeoutMs)
+
     try {
       const params = new URLSearchParams({ level: currentLevel })
       const url = `${BACKEND_API_URL}/words/random?${params.toString()}`
-      const response = await fetch(url)
+      const response = await fetch(url, { signal: controller.signal })
+
+      if (!response.ok) {
+        if ([502, 503, 504].includes(response.status)) {
+          throw new Error('COLD_START')
+        }
+        throw new Error(`HTTP_${response.status}`)
+      }
+
       const data = await response.json()
       setWord(data.word)
       setUrl(data.url)
@@ -79,8 +99,17 @@ function Guessing() {
         das: null,
       })
     } catch (error) {
-      setWord(`__error__Couldn't reach the server. It was inactive for too long and is turning on right now. This might take up to a few minutes. Please refresh the page.`)
+      if (error.name === 'AbortError' || error.message === 'COLD_START') {
+        setErrorMessage('The server is waking up. This may take up to a minute. Please wait and try again.')
+      } else {
+        setErrorMessage("Couldn't reach the server. It might be waking up or temporarily unavailable. Please try again shortly.")
+      }
       console.error('Error fetching word:', error)
+    } finally {
+      clearTimeout(slowTimer)
+      clearTimeout(hardTimer)
+      setIsFetchingWord(false)
+      setIsSlowFetch(false)
     }
   }
 
@@ -119,10 +148,17 @@ function Guessing() {
     }
   }
 
+  const gameOver = Object.values(buttonStates).some((state) => state !== null)
+
+  const canInteract = !isLoading && !isFetchingWord && !errorMessage && !gameOver
+  const canOpenDefinition = !!url && !isFetchingWord && !errorMessage
+  const canNext = !isLoading && !isFetchingWord && (gameOver || !!errorMessage)
+
+  const statusMessage = errorMessage || (isFetchingWord && isSlowFetch ? 'Server is waking up...' : null)
+
   const openDefinition = () => {
-    if (url) {
-      window.open(url, '_blank')
-    }
+    if (!canOpenDefinition) return
+    window.open(url, '_blank')
   }
 
   useEffect(() => {
@@ -146,50 +182,44 @@ function Guessing() {
     return () => window.removeEventListener('resize', handleResize)
   }, [word])
 
-  const gameOver = Object.values(buttonStates).some((state) => state !== null)
   const handleWordClick = (value) => {
-    if (isLoading || gameOver) {
-      return
-    }
-
+    if (!canInteract) return
     checkAnswer(value)
   }
 
   return (
     <div className='w-3/4 my-4 flex flex-col items-center gap-[10vh] sm:gap-5'>
       <div className='w-full text-center'>
-        <div
-          ref={containerRef}
-          className='mx-auto my-3 flex items-center justify-center relative'
-          style={{
-            height: 'clamp(120px, 18vh, 180px)',
-            width: '100%',
-          }}
-        >
-          {!word.startsWith('__error__') && (
+        <div ref={containerRef} className='mx-auto my-3 flex items-center justify-center relative' style={{ height: 'clamp(120px, 18vh, 180px)', width: '100%' }}>
+          {/* Word layer */}
+          <div className={`absolute inset-0 flex items-center justify-center px-4 transition-opacity duration-300 ease-in-out ${statusMessage ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
             <div
               ref={wordRef}
-              className='font-serif underline decoration-2 decoration-transparent hover:decoration-(--color-dark) hover:cursor-pointer transition-[text-decoration-color] duration-300 ease-in text-center max-w-full px-4'
-              style={{
-                fontSize: textSize,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-              }}
+              className={`font-serif underline decoration-2 decoration-transparent hover:decoration-(--color-dark) ${isFetchingWord ? 'pointer-events-none opacity-60' : 'hover:cursor-pointer'} text-center max-w-full`}
+              style={{ fontSize: textSize, whiteSpace: 'nowrap', overflow: 'hidden' }}
               onClick={openDefinition}
             >
               {word}
             </div>
-          )}
-          {word.startsWith('__error__') && <div className='font-sans text-red-600 text-center px-4'>{word.replace('__error__', '')}</div>}
+          </div>
+
+          {/* Status layer (error or waking up) */}
+          <div className={`absolute inset-0 flex items-center justify-center px-4 transition-opacity duration-300 ease-in-out ${statusMessage ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <div className={`font-sans text-center ${errorMessage ? 'text-(--color-fail)' : 'text-gray-600'}`} aria-live='polite'>
+              {statusMessage}
+            </div>
+          </div>
         </div>
       </div>
+
       <div className='flex justify-evenly w-full'>
-        <Button label='DER' onClick={() => handleWordClick('der')} status={buttonStates.der} disabled={isLoading || gameOver} />
-        <Button label='DIE' onClick={() => handleWordClick('die')} status={buttonStates.die} disabled={isLoading || gameOver} />
-        <Button label='DAS' onClick={() => handleWordClick('das')} status={buttonStates.das} disabled={isLoading || gameOver} />
+        <Button label='DER' onClick={() => handleWordClick('der')} status={buttonStates.der} disabled={!canInteract} />
+        <Button label='DIE' onClick={() => handleWordClick('die')} status={buttonStates.die} disabled={!canInteract} />
+        <Button label='DAS' onClick={() => handleWordClick('das')} status={buttonStates.das} disabled={!canInteract} />
       </div>
+
       <div className='flex justify-center w-full'>
-        <IconButton onClick={fetchWord} disabled={!gameOver || isLoading} className={`${gameOver && !isLoading ? 'opacity-100 cursor-pointer' : 'opacity-0 cursor-default'}`}>
+        <IconButton onClick={fetchWord} disabled={!canNext} className={`transition-opacity duration-300 ease-in-out ${canNext ? 'opacity-100 cursor-pointer' : 'opacity-0 cursor-default'}`}>
           <ArrowRight size={16} />
         </IconButton>
       </div>
